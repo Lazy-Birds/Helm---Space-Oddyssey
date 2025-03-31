@@ -1,0 +1,7 @@
+notes:
+
+pros
+-dynamic arrays are cool
+
+cons
+-can't do math in function declaration
