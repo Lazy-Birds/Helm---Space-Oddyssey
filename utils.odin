@@ -2,6 +2,7 @@ package main
 
 import rl "vendor:raylib"
 import fmt "core:fmt"
+import mth "core:math"
 import "third parties/odin-tiled-main/tiled"
 
 Dump :: proc(args: ..any) {
@@ -10,6 +11,46 @@ Dump :: proc(args: ..any) {
         fmt.print(" ")
     }
     fmt.print("\n")
+}
+
+sign_i32 :: proc(num: i32) -> i32
+{
+	switch
+	{
+		case num < 0:
+			return -1
+		case num == 0:
+			return 0
+		case num > 0:
+			return 1
+	}
+
+	return 255
+}
+
+sign_f32 :: proc(num: f32) -> f32
+{
+	switch
+	{
+	case num < 0:
+		return -1
+	case num == 0:
+		return 0
+	case num > 0:
+		return 1
+	}
+
+	return 255
+}
+
+abs_i32 :: proc(num: i32) -> i32
+{
+	return mth.abs(num)
+}
+
+abs_f32 :: proc(num: f32) -> f32
+{
+	return mth.abs(num)
 }
 
 draw_rectangle :: proc(rec: Rectangle2, color: HColor)
@@ -58,6 +99,18 @@ Rectangle2 game_to_screen_space_rect(Rectangle2 rec) {
     return r2(game_to_screen_space_point(rec.p0), game_to_screen_space_point(rec.p1));
 }*/
 
+make_level_array :: proc(cap: i32) -> LevelArray
+{
+	arr: LevelArray
+	arr.data = {}
+	arr.capacity = cap
+	arr.count = 0
+
+	resize(&arr.data, cap)
+
+	return arr
+}
+
 load_menu :: proc()
 {
 	offset = v2i(80, 0)
@@ -81,7 +134,7 @@ load_prelim_textures :: proc()
 	//menu.text = rl.LoadTextureFromImage(menu.img)
 }
 
-load_frame_textures :: proc(frames: FrameArray)
+load_frame_textures :: proc(frames: ^FrameArray)
 {
 	frames := frames
 
@@ -132,11 +185,11 @@ load_menu_buttons :: proc()
 	menu_buttons.data[2].size = 24
 }
 
-draw_frame_animation :: proc(frames: FrameArray, animation: ^Animation)
+draw_frame_animation :: proc(frames: FrameArray, animation: ^Animation, position: Vector2)
 {
 	animation:=animation
 
-	rl.DrawTexture(frames.data[animation.frame].text, offset.x, offset.y, rl.RAYWHITE)
+	rl.DrawTexture(frames.data[animation.frame].text, cast(i32)position.x+offset.x, cast(i32)position.y+offset.y, rl.RAYWHITE)
 
 	animation.index+=1
 

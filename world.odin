@@ -5,15 +5,20 @@ import rl "vendor:raylib"
 import "core:strings"
 
 
-make_tile :: proc()
+make_levels :: proc()
 {
+    World = make_level_array(10)
 
+    World.data[0].entities = make_world(level_one, tiles)
+    World.count+=1
 }
 
-make_world :: proc(t_map: Map, texture: rl.Texture)
+make_world :: proc(t_map: Map, texture: rl.Texture) -> EntityArray
 {
 	tile_width: i32 = 16
     tile_height: i32 = 16
+
+    ents: EntityArray = make_entity_array(1000)
 
     for layer in t_map.layers {
         for y in 0..<layer.height {
@@ -40,13 +45,15 @@ make_world :: proc(t_map: Map, texture: rl.Texture)
                     height = f32(tile_height),
                 }
 
-                entities.data[entities.count].img_src = src_rect
-                entities.data[entities.count].img_dest = dst_rect
+                ents.data[ents.count].img_src = src_rect
+                ents.data[ents.count].img_dest = dst_rect
 
-                entities.count+=1
+                ents.count+=1
             }
         }
     }
+
+    return ents
 }
 
 draw_world :: proc()
@@ -56,7 +63,7 @@ draw_world :: proc()
 
 main_menu :: proc()
 {
-	draw_frame_animation(menu.frames, &menu.animation)
+	draw_frame_animation(menu.frames, &menu.animation, v2(0, 0))
 	for i: i32 = 0; i < menu_buttons.count; i+=1
 	{
 		color: rl.Color
@@ -80,12 +87,19 @@ main_menu :: proc()
 }
 
 draw_map :: proc(t_map: Map, texture: rl.Texture2D) {
-    tile_width: i32 = 16
-    tile_height: i32 = 16
+    lvl: Level
 
-    for i : i32 = 0; i < entities.count; i+=1
+    switch state
     {
-    	 rl.DrawTexturePro(texture, entities.data[i].img_src, entities.data[i].img_dest, rl.Vector2{0, 0}, 0, rl.WHITE)
+    case GameState.menu:
+        lvl = World.data[0]
+    case GameState.level_one:
+        lvl = World.data[0]   
+    }
+
+    for i : i32 = 0; i < lvl.entities.count; i+=1
+    {
+    	 rl.DrawTexturePro(texture, lvl.entities.data[i].img_src, lvl.entities.data[i].img_dest, rl.Vector2{0, 0}, 0, rl.WHITE)
     }
 
     /*for layer in t_map.layers {

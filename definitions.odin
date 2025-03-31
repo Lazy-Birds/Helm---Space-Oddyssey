@@ -56,15 +56,19 @@ Entity :: struct {
 	//Strings
 	name: string,
 	//Integers
-	sprite_index, position, sprite_count: i32,
+	sprite_index, sprite_count: i32,
 	//Bools
 	alive: bool,
 	//Vector2's
-	size: Vector2,
+	size, velocity, position: Vector2,
 	//Recs
 	img_src, img_dest: rl.Rectangle,
 	//FrameArray
 	frames: FrameArray,
+	//Animation Timers
+	animation: Animation,
+	//Enums
+	state: PlayerStates,
 }
 
 EntityArray :: struct {

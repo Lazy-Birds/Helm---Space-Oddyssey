@@ -20,7 +20,7 @@ main :: proc()
 	//Load Menu
 	load_menu()
 	//We can start to populate GPU ram with Textures
-	load_frame_textures(menu.frames)
+	load_frame_textures(&menu.frames)
 	//Load Sounds
 	rl.InitAudioDevice()
 	load_jukebox()
@@ -29,7 +29,9 @@ main :: proc()
 	load_menu_buttons()
 	level_one = parse_tilemap("sources/test_level_two.tmj")
 	tiles = rl.LoadTexture("sources/cable.png")
-	make_world(level_one, tiles)
+	make_levels()
+	player = make_player()
+	load_frame_textures(&player.frames)
 
 	for (!rl.WindowShouldClose())
 	{
@@ -44,6 +46,7 @@ main :: proc()
 			} else
 			{
 				draw_map(level_one, tiles)
+				player_actions()
 			}
 			
 

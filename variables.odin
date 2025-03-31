@@ -29,6 +29,12 @@ EntityTypes :: enum {
 	et_ladder,
 }
 
+PlayerStates :: enum {
+	NEUTRAL,
+	MOVE,
+	TALKING,
+}
+
 GameState :: enum {
 	menu,
 	level_one,
@@ -46,3 +52,4 @@ level_one: Map
 tiles: rl.Texture
 state := GameState.menu
 scale: f32
+player: Entity
